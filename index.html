@@ -27,42 +27,32 @@
     </table>
 
     <script>
-        function doGet(e) {
-            var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-            var data = sheet.getDataRange().getValues();
-            
-            var presenze = {};
-            
-            for (var i = 1; i < data.length; i++) {
-                var nome = data[i][1];
-                var presente = data[i][2];
+        async function caricaClassifica() {
+            const url = "https://script.google.com/macros/s/TUO-LINK/exec"; // 🔹 Sostituisci con il link della tua API
         
-                if (presente.toLowerCase().trim() === "sì") {
-                    if (!presenze[nome]) {
-                        presenze[nome] = 0;
-                    }
-                    presenze[nome]++;
-                }
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Errore HTTP! Status: ${response.status}`);
+        
+                const data = await response.json();
+                console.log("Dati ricevuti:", data); // 👀 Debug per verificare i dati
+        
+                let html = "";
+                data.forEach((giocatore, index) => {
+                    html += `<tr>
+                                <td>${index + 1}</td>
+                                <td>${giocatore.nome}</td>
+                                <td>${giocatore.presenze}</td>
+                             </tr>`;
+                });
+        
+                document.getElementById("classifica").innerHTML = html;
+            } catch (error) {
+                console.error("Errore nel recupero dati:", error);
             }
-            
-            var classifica = Object.entries(presenze)
-                .sort((a, b) => b[1] - a[1])
-                .map(item => ({ nome: item[0], presenze: item[1] }));
+        }
         
-            // Aggiunta delle intestazioni CORS
-            var output = ContentService.createTextOutput(JSON.stringify(classifica));
-            output.setMimeType(ContentService.MimeType.JSON);
-            output.append("\n"); // Risolve un bug con le API di Google Apps Script
-        
-            var response = output;
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.setHeader("Access-Control-Allow-Methods", "GET");
-            response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-        
-            return response;
-}
-
-caricaClassifica();
+        caricaClassifica();
     </script>
 
 </body>

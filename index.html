@@ -27,6 +27,7 @@
         th, td {
             padding: 12px;
             border-bottom: 1px solid #ddd;
+            text-align: center;
         }
         th {
             background-color: #007bff;
@@ -40,6 +41,13 @@
             color: #007bff;
             font-weight: bold;
         }
+        .player-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
     </style>
 </head>
 <body>
@@ -49,6 +57,7 @@
         <thead>
             <tr>
                 <th>#</th>
+                <th>Foto</th>
                 <th>Nome</th>
                 <th>Presenze</th>
                 <th>Prima Partecipazione</th>
@@ -60,7 +69,7 @@
 
     <script>
         async function caricaClassifica() {
-            const url = "https://script.google.com/macros/s/AKfycby-6EficLyM-nt4WRb-1PNf6cUDQm8AUWSd5dPqc0O5r9DS76u7yBf7xbM3hZCKKuJT-g/exec"; // Sostituisci con il tuo URL
+            const url = "https://script.google.com/macros/s/AKfycbzG1wB0N2QioDWFMFDA2hQ1PdvaTiGjbkFVxoa2FZ2GTpm1LfEO5t20TIM6xVMJNfX_QQ/exec"; // Sostituisci con il tuo URL
 
             try {
                 const response = await fetch(url);
@@ -73,6 +82,7 @@
                 data.forEach((giocatore, index) => {
                     html += `<tr>
                                 <td>${index + 1}</td>
+                                <td><img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}"></td>
                                 <td>${giocatore.nome}</td>
                                 <td>${giocatore.presenze}</td>
                                 <td>${new Date(giocatore.prima).toLocaleDateString()}</td>

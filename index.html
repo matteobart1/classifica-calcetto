@@ -41,12 +41,23 @@
             color: #007bff;
             font-weight: bold;
         }
+        .player-container {
+            position: relative;
+            display: inline-block;
+        }
         .player-img {
             width: 50px;
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #ddd;
+        }
+        .badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
         }
     </style>
 </head>
@@ -70,6 +81,7 @@
     <script>
         async function caricaClassifica() {
             const url = "https://script.google.com/macros/s/AKfycbzG1wB0N2QioDWFMFDA2hQ1PdvaTiGjbkFVxoa2FZ2GTpm1LfEO5t20TIM6xVMJNfX_QQ/exec"; // Sostituisci con il tuo URL
+            const badgeURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png"; // Sostituiscilo con il tuo badge
 
             try {
                 const response = await fetch(url);
@@ -80,9 +92,16 @@
 
                 let html = "";
                 data.forEach((giocatore, index) => {
+                    const badge = index < 5 ? `<img src="${badgeURL}" class="badge">` : "";
+
                     html += `<tr>
                                 <td>${index + 1}</td>
-                                <td><img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}"></td>
+                                <td>
+                                    <div class="player-container">
+                                        <img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}">
+                                        ${badge}
+                                    </div>
+                                </td>
                                 <td>${giocatore.nome}</td>
                                 <td>${giocatore.presenze}</td>
                                 <td>${new Date(giocatore.prima).toLocaleDateString()}</td>

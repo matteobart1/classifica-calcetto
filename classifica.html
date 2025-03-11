@@ -32,7 +32,6 @@
         try {
             const response = await fetch(url, { mode: "cors" });
             const data = await response.json();
-            console.log(data);  // 👈 Aggiunto il log per vedere i dati ricevuti
     
             let html = "";
             data.forEach((giocatore, index) => {
@@ -48,6 +47,8 @@
             console.error("Errore nel recupero dati:", error);
         }
     }
+
+caricaClassifica();
 
 caricaClassifica();
     </script>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classifica Presenze Calcetto</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { width: 50%; margin: 20px auto; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+
+    <h1>Classifica Presenze</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Posizione</th>
+                <th>Giocatore</th>
+                <th>Presenze</th>
+            </tr>
+        </thead>
+        <tbody id="classifica">
+        </tbody>
+    </table>
+
+    <script>
+        async function caricaClassifica() {
+        const url = "https://script.google.com/macros/s/TUO-LINK/exec";
+        try {
+            const response = await fetch(url, { mode: "cors" });
+            const data = await response.json();
+    
+            let html = "";
+            data.forEach((giocatore, index) => {
+                html += `<tr>
+                            <td>${index + 1}</td>
+                            <td>${giocatore.nome}</td>
+                            <td>${giocatore.presenze}</td>
+                         </tr>`;
+            });
+    
+            document.getElementById("classifica").innerHTML = html;
+        } catch (error) {
+            console.error("Errore nel recupero dati:", error);
+        }
+    }
+
+caricaClassifica();
+
+caricaClassifica();
+    </script>
+
+</body>
+</html>

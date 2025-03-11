@@ -28,10 +28,12 @@
 
     <script>
         async function caricaClassifica() {
-            const url = "https://script.google.com/macros/s/AKfycbxvgbi75TcIr2zI4wbXwMCUF6sK1dC9cq2mm8OeHBuq5pfwPvIGRiTxAdax2G9JIpgZ0A/exec";  // Inserisci il link API di Apps Script
-            const response = await fetch(url);
+        const url = "https://script.google.com/macros/s/TUO-LINK/exec";
+        try {
+            const response = await fetch(url, { mode: "cors" });
             const data = await response.json();
-
+            console.log(data);  // 👈 Aggiunto il log per vedere i dati ricevuti
+    
             let html = "";
             data.forEach((giocatore, index) => {
                 html += `<tr>
@@ -40,11 +42,14 @@
                             <td>${giocatore.presenze}</td>
                          </tr>`;
             });
-
+    
             document.getElementById("classifica").innerHTML = html;
+        } catch (error) {
+            console.error("Errore nel recupero dati:", error);
         }
+    }
 
-        caricaClassifica();
+caricaClassifica();
     </script>
 
 </body>

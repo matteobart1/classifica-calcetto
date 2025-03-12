@@ -4,21 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classifica Calcetto</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('https://res.cloudinary.com/dp44j757l/image/upload/v1741740029/Background_givcwh.jpg'); /* Sostituisci con l'URL della tua immagine */
-            background-size: cover; /* Copre tutta la pagina */
-            background-position: center center; /* Centra l'immagine */
-            background-attachment: fixed; /* Fissa lo sfondo durante lo scroll */
-            background-repeat: no-repeat; /* Evita la ripetizione dell'immagine */
-            margin: 0; /* Rimuove i margini predefiniti del body */
+            background-image: url('https://res.cloudinary.com/dp44j757l/image/upload/v1741821059/IMG_7369_ngnl0j.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            margin: 0;
             text-align: center;
             padding: 20px;
         }
         h1 {
-            color: #333;
+            font-size: 36px; /* Aumenta la dimensione del titolo */
+            font-weight: bold;
+            color: #fff; /* Testo bianco */
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6); /* Ombra per migliorare la visibilità */
+            background-color: #007bff; /* Sfondo blu */
+            padding: 15px 30px; /* Spaziatura interna per rendere il titolo più leggibile */
+            border-radius: 10px; /* Angoli arrotondati */
+            display: inline-block;
+            margin-top: 30px;
+            margin-bottom: 20px;
         }
+
         table {
             width: 90%;
             max-width: 800px;
@@ -61,10 +72,24 @@
         }
         .badge {
             position: absolute;
-            bottom: -15px; /* Badge molto più fuori dall'immagine */
-            right: -15px;  /* Badge più spostato a destra */
+            bottom: -15px;
+            right: -15px;
             width: 40px;
             height: 40px;
+        }
+        .chart-container {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: white; /* Sfondo bianco */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        canvas {
+            background-color: white !important; /* Forza il colore di sfondo dei grafici */
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -85,23 +110,85 @@
         <tbody id="classifica"></tbody>
     </table>
 
+    <h1>Classifica Reti</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Gol Fatti</th>
+            </tr>
+        </thead>
+        <tbody id="classifica-reti"></tbody>
+    </table>
+
+    <h1>Classifica Vittorie</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Vittorie</th>
+            </tr>
+        </thead>
+        <tbody id="classifica-vittorie"></tbody>
+    </table>
+
+
+
+    <!-- Includi Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <h1>Statistiche</h1>
+
+    <!-- Contenitore per i grafici -->
+    <div class="chart-container">
+        <canvas id="chartPresenze"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="chartReti"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="chartVittorie"></canvas>
+    </div>
+
+
+    
     <script>
         async function caricaClassifica() {
-            const url = "https://script.google.com/macros/s/AKfycbxJxBo8Xf4jXQoMpHVbvMVhuoDsNNHjLGXrAA9vLkEHp-ASJgK4WW14xXcsxICSWQYR1g/exec"; // Sostituisci con il tuo URL
-            const badgeURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png"; // Sostituiscilo con il tuo badge
-
+            const url = "https://script.google.com/macros/s/AKfycbxJxBo8Xf4jXQoMpHVbvMVhuoDsNNHjLGXrAA9vLkEHp-ASJgK4WW14xXcsxICSWQYR1g/exec";
+            const badgeURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png";
+    
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`Errore HTTP! Status: ${response.status}`);
-
+    
                 const data = await response.json();
                 console.log("Dati ricevuti:", data);
-
-                let html = "";
+    
+                let htmlPresenze = "";
+                let htmlReti = "";
+                let htmlVittorie = "";
+    
+                let nomi = [];
+                let presenze = [];
+                let reti = [];
+                let vittorie = [];
+    
                 data.forEach((giocatore, index) => {
+                    nomi.push(giocatore.nome);
+                    presenze.push(giocatore.presenze);
+                    reti.push(giocatore.reti);
+                    vittorie.push(giocatore.vittorie);
+    
                     const badge = index < 5 ? `<img src="${badgeURL}" class="badge">` : "";
-
-                    html += `<tr>
+    
+                    // Classifica presenze
+                    htmlPresenze += `<tr>
                                 <td>${index + 1}</td>
                                 <td>
                                     <div class="player-container">
@@ -115,8 +202,39 @@
                                 <td>${new Date(giocatore.ultima).toLocaleDateString()}</td>
                              </tr>`;
                 });
-
-                document.getElementById("classifica").innerHTML = html;
+    
+                data.filter(g => g.reti > 0).forEach((giocatore, index) => {
+                    htmlReti += `<tr>
+                                <td>${index + 1}</td>
+                                <td>
+                                    <div class="player-container">
+                                        <img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}">
+                                    </div>
+                                </td>
+                                <td>${giocatore.nome}</td>
+                                <td>${giocatore.reti}</td>
+                             </tr>`;
+                });
+    
+                data.filter(g => g.vittorie > 0).forEach((giocatore, index) => {
+                    htmlVittorie += `<tr>
+                                <td>${index + 1}</td>
+                                <td>
+                                    <div class="player-container">
+                                        <img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}">
+                                    </div>
+                                </td>
+                                <td>${giocatore.nome}</td>
+                                <td>${giocatore.vittorie}</td>
+                             </tr>`;
+                });
+    
+                document.getElementById("classifica").innerHTML = htmlPresenze;
+                document.getElementById("classifica-reti").innerHTML = htmlReti;
+                document.getElementById("classifica-vittorie").innerHTML = htmlVittorie;
+    
+                generaGrafici(nomi, presenze, reti, vittorie);
+    
             } catch (error) {
                 console.error("Errore nel recupero dati:", error);
                 document.getElementById("loading").innerText = "Errore nel caricamento!";
@@ -124,8 +242,137 @@
                 document.getElementById("loading").style.display = "none";
             }
         }
+    
+        function generaGrafici(nomi, presenze, reti, vittorie) {
+            // 1️⃣ Ordiniamo i giocatori per presenze e prendiamo solo i primi 10
+            const top10Presenze = nomi.map((nome, index) => ({
+                nome: nome,
+                presenze: presenze[index]
+            })).sort((a, b) => b.presenze - a.presenze)
+            .slice(0, 10);
 
+            const nomiPresenze = top10Presenze.map(g => g.nome);
+            const presenzeFiltrate = top10Presenze.map(g => g.presenze);
+
+            // 2️⃣ Filtra solo i giocatori che hanno segnato almeno un gol per il grafico delle reti
+            const giocatoriConReti = nomi.map((nome, index) => ({
+                nome: nome,
+                reti: reti[index]
+            })).filter(giocatore => giocatore.reti > 0);
+
+            const nomiFiltratiReti = giocatoriConReti.map(g => g.nome);
+            const retiFiltrate = giocatoriConReti.map(g => g.reti);
+
+            // 3️⃣ Ordiniamo i giocatori per vittorie e prendiamo solo i primi 10
+            const top10Vittorie = nomi.map((nome, index) => ({
+                nome: nome,
+                vittorie: vittorie[index]
+            })).sort((a, b) => b.vittorie - a.vittorie)
+            .slice(0, 10);
+
+            const nomiVittorie = top10Vittorie.map(g => g.nome);
+            const vittorieFiltrate = top10Vittorie.map(g => g.vittorie);
+
+            // 📊 Grafico delle Presenze (solo top 10)
+            new Chart(document.getElementById("chartPresenze"), {
+                type: "bar",
+                data: {
+                    labels: nomiPresenze,
+                    datasets: [{
+                        label: "Presenze",
+                        data: presenzeFiltrate,
+                        backgroundColor: "rgba(0, 123, 255, 0.6)",
+                        borderColor: "rgba(0, 123, 255, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Classifica Presenze - Top 10",
+                            font: { size: 18 }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // 🥧 Grafico delle Reti (solo chi ha almeno 1 gol)
+            new Chart(document.getElementById("chartReti"), {
+                type: "pie",
+                data: {
+                    labels: nomiFiltratiReti,
+                    datasets: [{
+                        label: "Reti",
+                        data: retiFiltrate,
+                        backgroundColor: [
+                            "rgba(255, 99, 132, 0.6)",
+                            "rgba(54, 162, 235, 0.6)",
+                            "rgba(255, 206, 86, 0.6)",
+                            "rgba(75, 192, 192, 0.6)",
+                            "rgba(153, 102, 255, 0.6)"
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Distribuzione delle Reti",
+                            font: { size: 18 }
+                        }
+                    }
+                }
+            });
+
+            // 📉 Grafico delle Vittorie (solo top 10) - SOLO NUMERI INTERI SULL'ASSE X
+            new Chart(document.getElementById("chartVittorie"), {
+                type: "bar",
+                data: {
+                    labels: nomiVittorie,
+                    datasets: [{
+                        label: "Vittorie",
+                        data: vittorieFiltrate,
+                        backgroundColor: "rgba(40, 167, 69, 0.6)",
+                        borderColor: "rgba(40, 167, 69, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y', // Grafico orizzontale
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Classifica Vittorie - Top 10",
+                            font: { size: 18 }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1, // Mostra solo numeri interi
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+
+
+    
         caricaClassifica();
     </script>
-</body>
+    
+    
+    </body>
 </html>

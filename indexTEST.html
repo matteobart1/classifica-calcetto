@@ -81,10 +81,16 @@
             width: 90%;
             max-width: 600px;
             margin: 20px auto;
-            padding: 15px;
-            background-color: white; /* Sfondo bianco */
+            padding: 20px;  /* Aggiunge spazio interno ai grafici */
+            background-color: white; /* Sfondo per migliorare la leggibilità */
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #chartVittorie {
+            height: auto !important; /* Altezza dinamica */
+            min-height: 400px; /* Altezza minima */
+            max-height: 800px; /* Altezza massima per non esagerare */
         }
 
         canvas {
@@ -94,7 +100,7 @@
     </style>
 </head>
 <body>
-    <h1>Classifica Presenze Calcetto</h1>
+    <h1>Classifica Presenze</h1>
     <p id="loading" class="loading">Caricamento dati...</p>
     <table>
         <thead>
@@ -273,8 +279,14 @@
             const nomiVittorie = top10Vittorie.map(g => g.nome);
             const vittorieFiltrate = top10Vittorie.map(g => g.vittorie);
 
-            // 📊 Grafico delle Presenze (solo top 10)
-            new Chart(document.getElementById("chartPresenze"), {
+            // 📊 Grafico delle Presenze (solo top 10) - Altezza dinamica e barre più alte
+            const chartPresenzeCanvas = document.getElementById("chartPresenze");
+
+            // Imposta l'altezza dinamica: 50px per ogni giocatore, con min 400px e max 800px
+            const altezzaDinamicaPresenze = Math.min(800, Math.max(400, top10Presenze.length * 50));
+            chartPresenzeCanvas.style.height = altezzaDinamicaPresenze + "px";
+
+            new Chart(chartPresenzeCanvas, {
                 type: "bar",
                 data: {
                     labels: nomiPresenze,
@@ -283,11 +295,13 @@
                         data: presenzeFiltrate,
                         backgroundColor: "rgba(0, 123, 255, 0.6)",
                         borderColor: "rgba(0, 123, 255, 1)",
-                        borderWidth: 1
+                        borderWidth: 1,
+                        barThickness: 30 // Aumenta ulteriormente l'altezza delle barre
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // Adatta l'altezza del grafico dinamicamente
                     plugins: {
                         title: {
                             display: true,
@@ -296,16 +310,25 @@
                         }
                     },
                     scales: {
+                        x: {
+                            ticks: {
+                                maxRotation: 45,  // Ruota i nomi di 45° su mobile
+                                minRotation: 45,
+                                font: { size: 12 }
+                            }
+                        },
                         y: { beginAtZero: true }
                     }
                 }
             });
 
-            // 🥧 Grafico delle Reti (solo chi ha almeno 1 gol)
+           // 🥧 Grafico delle Reti con Percentuali SOLO nei tooltip
+            const totaleReti = retiFiltrate.reduce((sum, reti) => sum + reti, 0); // Totale reti segnate
+
             new Chart(document.getElementById("chartReti"), {
                 type: "pie",
                 data: {
-                    labels: nomiFiltratiReti,
+                    labels: nomiFiltratiReti, // Mantiene solo i nomi nella legenda
                     datasets: [{
                         label: "Reti",
                         data: retiFiltrate,
@@ -320,18 +343,37 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         title: {
                             display: true,
                             text: "Distribuzione delle Reti",
                             font: { size: 18 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    const index = tooltipItem.dataIndex;
+                                    const reti = retiFiltrate[index];
+                                    const percentuale = ((reti / totaleReti) * 100).toFixed(1);
+                                    return `${nomiFiltratiReti[index]}: ${reti} gol (${percentuale}%)`; // Percentuale solo nei tooltip
+                                }
+                            }
                         }
                     }
                 }
             });
 
-            // 📉 Grafico delle Vittorie (solo top 10) - SOLO NUMERI INTERI SULL'ASSE X
-            new Chart(document.getElementById("chartVittorie"), {
+
+
+            // 📉 Grafico delle Vittorie (solo top 10) - Altezza dinamica e barre più grandi
+            const chartVittorieCanvas = document.getElementById("chartVittorie");
+
+            // Imposta l'altezza dinamica: 50px per ogni giocatore, con min 400px e max 800px
+            const altezzaDinamicaVittorie = Math.min(800, Math.max(400, top10Vittorie.length * 50));
+            chartVittorieCanvas.style.height = altezzaDinamicaVittorie + "px";
+
+            new Chart(chartVittorieCanvas, {
                 type: "bar",
                 data: {
                     labels: nomiVittorie,
@@ -340,12 +382,14 @@
                         data: vittorieFiltrate,
                         backgroundColor: "rgba(40, 167, 69, 0.6)",
                         borderColor: "rgba(40, 167, 69, 1)",
-                        borderWidth: 1
+                        borderWidth: 1,
+                        barThickness: 30 // Aumenta l'altezza delle barre
                     }]
                 },
                 options: {
                     responsive: true,
-                    indexAxis: 'y', // Grafico orizzontale
+                    maintainAspectRatio: false, // Adatta l'altezza del grafico dinamicamente
+                    indexAxis: 'y', // Imposta il grafico in orizzontale
                     plugins: {
                         title: {
                             display: true,
@@ -360,11 +404,19 @@
                                 stepSize: 1, // Mostra solo numeri interi
                                 precision: 0
                             }
+                        },
+                        y: {
+                            ticks: {
+                                font: { size: 14 } // Mantiene leggibilità su mobile
+                            }
                         }
                     }
                 }
             });
         }
+
+
+
 
 
 

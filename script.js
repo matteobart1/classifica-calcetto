@@ -266,3 +266,25 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
 }
 
 caricaClassifica();
+
+
+// Assicurati che il DOM sia caricato
+document.addEventListener("DOMContentLoaded", () => {
+    const versionIndicator = document.getElementById("version-indicator");
+  
+    // Sostituisci "tuoUtente" e "tuoRepo" con i dati del tuo repository
+    fetch("https://api.github.com/repos/tuoUtente/tuoRepo/commits?per_page=1")
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const commitHash = data[0].sha.substring(0, 7); // Prendi i primi 7 caratteri
+          versionIndicator.innerText = `Versione: ${commitHash}`;
+        } else {
+          versionIndicator.innerText = "Versione: non disponibile";
+        }
+      })
+      .catch(error => {
+        console.error("Errore nel recupero della versione:", error);
+        versionIndicator.innerText = "Versione: errore";
+      });
+  });

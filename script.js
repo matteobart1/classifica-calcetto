@@ -268,17 +268,21 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
 caricaClassifica();
 
 
-// Assicurati che il DOM sia caricato
 document.addEventListener("DOMContentLoaded", () => {
     const versionIndicator = document.getElementById("version-indicator");
   
     // Sostituisci "tuoUtente" e "tuoRepo" con i dati del tuo repository
-    fetch("https://api.github.com/repos/tuoUtente/tuoRepo/commits?per_page=1")
+    fetch("https://api.github.com/repos/matteobart1/classifica-calcetto/commits?per_page=1")
       .then(response => response.json())
       .then(data => {
         if (data && data.length > 0) {
-          const commitHash = data[0].sha.substring(0, 7); // Prendi i primi 7 caratteri
-          versionIndicator.innerText = `Versione: ${commitHash}`;
+          const commit = data[0];
+          const commitHash = commit.sha.substring(0, 7); // Prendi i primi 7 caratteri
+          // Estrai la data del commit
+          const commitDate = new Date(commit.commit.committer.date);
+          // Formatta la data come preferisci, ad esempio con toLocaleString()
+          const formattedDate = commitDate.toLocaleString();
+          versionIndicator.innerText = `Versione: ${commitHash} (commit del ${formattedDate})`;
         } else {
           versionIndicator.innerText = "Versione: non disponibile";
         }
@@ -288,3 +292,4 @@ document.addEventListener("DOMContentLoaded", () => {
         versionIndicator.innerText = "Versione: errore";
       });
   });
+  

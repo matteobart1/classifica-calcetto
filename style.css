@@ -11,43 +11,54 @@ body {
 }
 
 /* Legenda Badge */
-.badge-legend {
+.titolo-tabella-presenze {
+    background-color: #2c2d2e;
+    color: #fff;
+    padding: 15px 30px;
+    border-radius: 10px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+    margin-top: 30px;
+    margin-bottom: 10px;
+    
+  }
+  
+  /* Stile per il blocco legenda specifico della tabella presenze */
+  .badge-legend.legend-presenze {
     background-color: #f8f9fa;
     border-radius: 10px;
-    padding: 15px;
-    margin: 20px auto;
-    width: 90%;
-    max-width: 800px;
+    padding: 10px;
+    margin: 0 auto 20px; /* centrare e dare margine inferiore */
+    width: 60%;       /* larghezza ridotta */
+    max-width: 300px; /* oppure un valore fisso, ad es. 400px */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.badge-legend h2 {
-    font-size: 24px;
-    margin: 0 0 10px;
-}
-
-.legend-items {
+    text-align: center;
+  }
+  
+  .legend-items {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-}
-
-.legend-item {
+  }
+  
+  .legend-item {
     display: flex;
     align-items: center;
-    margin: 5px 15px;
-}
-
-.legend-item img {
+    margin: 5px 10px;
+  }
+  
+  .legend-item img {
     width: 40px;
     height: 40px;
     margin-right: 10px;
-}
-
-.legend-item span {
+  }
+  
+  .legend-item span {
     font-size: 16px;
     font-weight: bold;
-}
+  }
+  
+  /* Se hai stili specifici per la tabella delle presenze, ricordati di mantenere le classi (es. .tabella-presenze, .header-presenze) */
+  
 
 /* Resto del CSS per tabelle, grafici e contenuto */
 h1 {
@@ -55,7 +66,7 @@ h1 {
     font-weight: bold;
     color: #fff;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
-    background-color: #007bff;
+    background-color: #2c2d2e;
     padding: 15px 30px;
     border-radius: 10px;
     display: inline-block;
@@ -81,7 +92,7 @@ th, td {
 }
 
 th {
-    background-color: #007bff;
+    background-color: #2c2d2e;;
     color: white;
 }
 
@@ -159,3 +170,47 @@ canvas {
         height: auto !important;
     }
 }
+
+header {
+    background-color: rgba(51, 51, 51, 0.8);  /* colore semitrasparente */
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .header-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .logo img {
+    height: 50px; /* Imposta l'altezza desiderata per il logo */
+    width: auto;
+  }
+  
+
+footer {
+    background-color: rgba(51, 51, 51, 0.6); /* 0.8 indica il livello di opacità (80% opaco) */
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 40px;
+  }
+
+  footer .footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  footer a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  

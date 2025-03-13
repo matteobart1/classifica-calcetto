@@ -11,20 +11,31 @@
 </head>
 <body>
     <header>
-        <div class="badge-legend">
-          <h2>Legenda</h2>
-          <div class="legend-items">
-            <div class="legend-item">
-              <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png" alt="Badge Senatore">
-              <span>Badge Senatore</span>
-            </div>
-            <!-- In futuro puoi aggiungere altri elementi .legend-item qui -->
+        <div class="header-container">
+          <div class="logo">
+            <img src="https://example.com/logo.png" alt="Logo della WebApp">
           </div>
+          <!-- Puoi aggiungere qui anche un menu di navigazione o altri elementi se lo desideri -->
         </div>
-      </header>
+          
+    </header>
 
-<h1>Classifica Presenze</h1>
+    
+<h1 class="titolo-tabella-presenze">Classifica Presenze</h1>
+
   <p id="loading" class="loading">Caricamento dati...</p>
+ 
+ <!-- Blocco Legenda Badge spostato sotto il titolo -->
+<div class="badge-legend legend-presenze">
+    <div class="legend-items">
+      <div class="legend-item">
+        <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png" alt="Badge Senatore">
+        <span>Senatore</span>
+      </div>
+      <!-- In futuro puoi aggiungere altri .legend-item qui -->
+    </div>
+  </div>
+ </div>
   <table>
       <thead>
           <tr>
@@ -79,8 +90,17 @@
   <!-- Includi il file JavaScript esterno -->
   <script src="script.js"></script>
 
-  <div id="version-indicator">%%VERSION%%</div>
-  <div id="version-indicator" style="font-size:0.9em; margin-bottom:10px;"></div>
+  
+  
 
 </body>
+
+<footer>
+    <div class="footer-content">
+      <p>© 2025 Calcetto Consalvi - Tutti i diritti riservati</p>
+      
+    </div>
+    <div id="version-indicator" style="font-size:0.9em; margin-bottom:10px;"></div>  
+</footer>
+
 </html>

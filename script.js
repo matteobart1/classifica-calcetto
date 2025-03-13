@@ -13,20 +13,9 @@ async function caricaClassifica() {
         let htmlReti = "";
         let htmlVittorie = "";
 
-        let nomi = [];
-        let presenze = [];
-        let reti = [];
-        let vittorie = [];
-
+        // Generazione tabella presenze (mantiene l'ordine originale o quello stabilito dal backend)
         data.forEach((giocatore, index) => {
-            nomi.push(giocatore.nome);
-            presenze.push(giocatore.presenze);
-            reti.push(giocatore.reti);
-            vittorie.push(giocatore.vittorie);
-
             const badge = index < 5 ? `<img src="${badgeURL}" class="badge">` : "";
-
-            // Classifica presenze
             htmlPresenze += `<tr>
                         <td>${index + 1}</td>
                         <td>
@@ -42,8 +31,12 @@ async function caricaClassifica() {
                      </tr>`;
         });
 
-        data.filter(g => g.reti > 0).forEach((giocatore, index) => {
-            htmlReti += `<tr>
+        // Generazione tabella reti: filtra solo i giocatori con almeno 1 rete, ordina in modo decrescente
+        data
+            .filter(g => g.reti > 0)
+            .sort((a, b) => b.reti - a.reti)
+            .forEach((giocatore, index) => {
+                htmlReti += `<tr>
                         <td>${index + 1}</td>
                         <td>
                             <div class="player-container">
@@ -53,10 +46,14 @@ async function caricaClassifica() {
                         <td>${giocatore.nome}</td>
                         <td>${giocatore.reti}</td>
                      </tr>`;
-        });
+            });
 
-        data.filter(g => g.vittorie > 0).forEach((giocatore, index) => {
-            htmlVittorie += `<tr>
+        // Generazione tabella vittorie: filtra solo i giocatori con almeno 1 vittoria, ordina in modo decrescente
+        data
+            .filter(g => g.vittorie > 0)
+            .sort((a, b) => b.vittorie - a.vittorie)
+            .forEach((giocatore, index) => {
+                htmlVittorie += `<tr>
                         <td>${index + 1}</td>
                         <td>
                             <div class="player-container">
@@ -66,13 +63,18 @@ async function caricaClassifica() {
                         <td>${giocatore.nome}</td>
                         <td>${giocatore.vittorie}</td>
                      </tr>`;
-        });
+            });
 
         document.getElementById("classifica").innerHTML = htmlPresenze;
         document.getElementById("classifica-reti").innerHTML = htmlReti;
         document.getElementById("classifica-vittorie").innerHTML = htmlVittorie;
 
-        generaGrafici(nomi, presenze, reti, vittorie);
+        generaGrafici(
+            data.map(g => g.nome),
+            data.map(g => g.presenze),
+            data.map(g => g.reti),
+            data.map(g => g.vittorie)
+        );
 
     } catch (error) {
         console.error("Errore nel recupero dati:", error);
@@ -83,7 +85,7 @@ async function caricaClassifica() {
 }
 
 function generaGrafici(nomi, presenze, reti, vittorie) {
-    // 1️⃣ Ordiniamo i giocatori per presenze e prendiamo solo i primi 10
+    // Grafico Presenze: Ordiniamo i giocatori per presenze e prendiamo solo i primi 10
     const top10Presenze = nomi.map((nome, index) => ({
         nome: nome,
         presenze: presenze[index]
@@ -93,16 +95,16 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
     const nomiPresenze = top10Presenze.map(g => g.nome);
     const presenzeFiltrate = top10Presenze.map(g => g.presenze);
 
-    // 2️⃣ Filtra solo i giocatori che hanno segnato almeno un gol per il grafico delle reti
+    // Grafico Reti: Filtriamo i giocatori con almeno 1 rete, ordiniamo in modo decrescente e prendiamo i primi 10
     const giocatoriConReti = nomi.map((nome, index) => ({
         nome: nome,
         reti: reti[index]
     })).filter(giocatore => giocatore.reti > 0);
+    const top10Reti = giocatoriConReti.sort((a, b) => b.reti - a.reti).slice(0, 10);
+    const nomiFiltratiReti = top10Reti.map(g => g.nome);
+    const retiFiltrate = top10Reti.map(g => g.reti);
 
-    const nomiFiltratiReti = giocatoriConReti.map(g => g.nome);
-    const retiFiltrate = giocatoriConReti.map(g => g.reti);
-
-    // 3️⃣ Ordiniamo i giocatori per vittorie e prendiamo solo i primi 10
+    // Grafico Vittorie: Ordiniamo i giocatori per vittorie in modo decrescente e prendiamo i primi 10
     const top10Vittorie = nomi.map((nome, index) => ({
         nome: nome,
         vittorie: vittorie[index]
@@ -112,10 +114,8 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
     const nomiVittorie = top10Vittorie.map(g => g.nome);
     const vittorieFiltrate = top10Vittorie.map(g => g.vittorie);
 
-    // 📊 Grafico delle Presenze (solo top 10)
+    // Grafico delle Presenze (solo top 10)
     const chartPresenzeCanvas = document.getElementById("chartPresenze");
-
-    // Imposta un'altezza dinamica diversa in base alla larghezza dello schermo
     let altezzaDinamicaPresenze;
     if (window.innerWidth < 768) {
         altezzaDinamicaPresenze = 500;  // Altezza aumentata per mobile
@@ -124,7 +124,6 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
     }
     chartPresenzeCanvas.style.height = altezzaDinamicaPresenze + "px";
 
-    // Costruiamo il dataset: su mobile non impostiamo barThickness per lasciare che Chart.js calcoli le dimensioni
     let datasetPresenze = {
         label: "Presenze",
         data: presenzeFiltrate,
@@ -165,7 +164,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
         }
     });
 
-    // 🥧 Grafico delle Reti con percentuali nei tooltip
+    // Grafico delle Reti (solo top 10)
     const totaleReti = retiFiltrate.reduce((sum, r) => sum + r, 0);
     new Chart(document.getElementById("chartReti"), {
         type: "pie",
@@ -189,16 +188,16 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
             plugins: {
                 title: {
                     display: true,
-                    text: "Distribuzione delle Reti",
+                    text: "Distribuzione delle Reti - Top 10",
                     font: { size: 18 }
                 },
                 tooltip: {
                     callbacks: {
                         label: function (tooltipItem) {
                             const index = tooltipItem.dataIndex;
-                            const reti = retiFiltrate[index];
-                            const percentuale = ((reti / totaleReti) * 100).toFixed(1);
-                            return `${nomiFiltratiReti[index]}: ${reti} gol (${percentuale}%)`;
+                            const rete = retiFiltrate[index];
+                            const percentuale = ((rete / totaleReti) * 100).toFixed(1);
+                            return `${nomiFiltratiReti[index]}: ${rete} gol (${percentuale}%)`;
                         }
                     }
                 }
@@ -206,7 +205,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
         }
     });
 
-    // 📉 Grafico delle Vittorie (solo top 10)
+    // Grafico delle Vittorie (solo top 10)
     const chartVittorieCanvas = document.getElementById("chartVittorie");
     const altezzaDinamicaVittorie = Math.min(800, Math.max(400, top10Vittorie.length * 50));
     chartVittorieCanvas.style.height = altezzaDinamicaVittorie + "px";

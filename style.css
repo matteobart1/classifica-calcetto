@@ -10,6 +10,46 @@ body {
     padding: 20px;
 }
 
+/* Legenda Badge */
+.badge-legend {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.badge-legend h2 {
+    font-size: 24px;
+    margin: 0 0 10px;
+}
+
+.legend-items {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 15px;
+}
+
+.legend-item img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.legend-item span {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Resto del CSS per tabelle, grafici e contenuto */
 h1 {
     font-size: 36px;
     font-weight: bold;
@@ -99,21 +139,20 @@ canvas {
     border-radius: 10px;
 }
 
-/* Media query per dispositivi mobili e tablet (max-width: 768px) */
+/* Media query per dispositivi mobili */
 @media (max-width: 768px) {
-    /* Tabelle responsive */
     table {
         width: 100%;
         font-size: 14px;
     }
-    /* Se la tabella è troppo larga, avvolgila in un contenitore con scroll orizzontale */
     .table-container {
         overflow-x: auto;
     }
-    /* Grafici: adattamento del container e del canvas */
+    /* Per i grafici: riduciamo leggermente la larghezza e aggiungiamo margini laterali */
     .chart-container {
-        width: 100%;
-        padding: 10px; /* Riduci il padding sui dispositivi mobili */
+        width: calc(100% - 20px); /* Lascia 10px di margine su entrambi i lati */
+        margin: 20px auto;
+        padding: 10px;
     }
     canvas {
         width: 100% !important;

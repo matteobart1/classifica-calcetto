@@ -118,11 +118,14 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
     const chartPresenzeCanvas = document.getElementById("chartPresenze");
     let altezzaDinamicaPresenze;
     if (window.innerWidth < 768) {
-        altezzaDinamicaPresenze = 500;  // Altezza aumentata per mobile
+        // Per mobile: aumenta l'altezza per visualizzare meglio le barre
+        altezzaDinamicaPresenze = Math.max(250, top10Presenze.length * 50);
     } else {
         altezzaDinamicaPresenze = Math.min(800, Math.max(400, top10Presenze.length * 50));
     }
+    // Imposta lo stile e l'attributo height del canvas
     chartPresenzeCanvas.style.height = altezzaDinamicaPresenze + "px";
+    chartPresenzeCanvas.setAttribute("height", altezzaDinamicaPresenze);
 
     let datasetPresenze = {
         label: "Presenze",
@@ -174,11 +177,21 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
                 label: "Reti",
                 data: retiFiltrate,
                 backgroundColor: [
-                    "rgba(255, 99, 132, 0.6)",
-                    "rgba(54, 162, 235, 0.6)",
-                    "rgba(255, 206, 86, 0.6)",
-                    "rgba(75, 192, 192, 0.6)",
-                    "rgba(153, 102, 255, 0.6)"
+                    
+                    
+                    "rgba(0, 123, 255, 0.8)",  // Blu Primario
+                    "rgba(0, 86, 179, 0.8)",   // Blu Scuro
+                    "rgba(40, 167, 69, 0.8)",  // Verde Campo
+                    "rgba(255, 193, 7, 0.8)",  // Giallo Oro
+                    "rgba(220, 53, 69, 0.8)",  // Rosso Vivace
+                    "rgba(253, 126, 20, 0.8)", // Arancione Energetico
+                    "rgba(23, 162, 184, 0.8)", // Ciano Fresco
+                    "rgba(111, 66, 193, 0.8)", // Viola Intenso
+                    "rgba(108, 117, 125, 0.8)",// Grigio Neutro
+                    "rgba(247, 243, 9, 0.93)" // Bianco Sporco / Grigio Chiaro
+
+
+
                 ]
             }]
         },
@@ -220,7 +233,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
                 backgroundColor: "rgba(40, 167, 69, 0.6)",
                 borderColor: "rgba(40, 167, 69, 1)",
                 borderWidth: 1,
-                barThickness: 30
+                barThickness: 22
             }]
         },
         options: {

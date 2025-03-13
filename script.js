@@ -112,9 +112,18 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
     const nomiVittorie = top10Vittorie.map(g => g.nome);
     const vittorieFiltrate = top10Vittorie.map(g => g.vittorie);
 
-    // Grafico delle Presenze (solo top 10)
+    // 📊 Grafico delle Presenze (solo top 10)
     const chartPresenzeCanvas = document.getElementById("chartPresenze");
-    const altezzaDinamicaPresenze = Math.min(800, Math.max(400, top10Presenze.length * 50));
+
+    // Imposta un'altezza dinamica e il barThickness in base alla larghezza dello schermo
+    let altezzaDinamicaPresenze, barThickness;
+    if (window.innerWidth < 768) {
+        altezzaDinamicaPresenze = 500;  // Aumentata l'altezza per mobile
+        barThickness = 20;             // Barre leggermente più sottili
+    } else {
+        altezzaDinamicaPresenze = Math.min(800, Math.max(400, top10Presenze.length * 50));
+        barThickness = 30;
+    }
     chartPresenzeCanvas.style.height = altezzaDinamicaPresenze + "px";
 
     new Chart(chartPresenzeCanvas, {
@@ -127,7 +136,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
                 backgroundColor: "rgba(0, 123, 255, 0.6)",
                 borderColor: "rgba(0, 123, 255, 1)",
                 borderWidth: 1,
-                barThickness: 30
+                barThickness: barThickness
             }]
         },
         options: {
@@ -153,7 +162,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
         }
     });
 
-    // Grafico delle Reti con Percentuali nei tooltip
+    // 🥧 Grafico delle Reti con percentuali nei tooltip
     const totaleReti = retiFiltrate.reduce((sum, reti) => sum + reti, 0);
     new Chart(document.getElementById("chartReti"), {
         type: "pie",
@@ -194,7 +203,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
         }
     });
 
-    // Grafico delle Vittorie (solo top 10)
+    // 📉 Grafico delle Vittorie (solo top 10)
     const chartVittorieCanvas = document.getElementById("chartVittorie");
     const altezzaDinamicaVittorie = Math.min(800, Math.max(400, top10Vittorie.length * 50));
     chartVittorieCanvas.style.height = altezzaDinamicaVittorie + "px";

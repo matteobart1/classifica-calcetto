@@ -88,7 +88,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
         nome: nome,
         presenze: presenze[index]
     })).sort((a, b) => b.presenze - a.presenze)
-    .slice(0, 10);
+      .slice(0, 10);
 
     const nomiPresenze = top10Presenze.map(g => g.nome);
     const presenzeFiltrate = top10Presenze.map(g => g.presenze);
@@ -107,7 +107,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
         nome: nome,
         vittorie: vittorie[index]
     })).sort((a, b) => b.vittorie - a.vittorie)
-    .slice(0, 10);
+      .slice(0, 10);
 
     const nomiVittorie = top10Vittorie.map(g => g.nome);
     const vittorieFiltrate = top10Vittorie.map(g => g.vittorie);
@@ -115,29 +115,32 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
     // 📊 Grafico delle Presenze (solo top 10)
     const chartPresenzeCanvas = document.getElementById("chartPresenze");
 
-    // Imposta un'altezza dinamica e il barThickness in base alla larghezza dello schermo
-    let altezzaDinamicaPresenze, barThickness;
+    // Imposta un'altezza dinamica diversa in base alla larghezza dello schermo
+    let altezzaDinamicaPresenze;
     if (window.innerWidth < 768) {
-        altezzaDinamicaPresenze = 500;  // Aumentata l'altezza per mobile
-        barThickness = 20;             // Barre leggermente più sottili
+        altezzaDinamicaPresenze = 500;  // Altezza aumentata per mobile
     } else {
         altezzaDinamicaPresenze = Math.min(800, Math.max(400, top10Presenze.length * 50));
-        barThickness = 30;
     }
     chartPresenzeCanvas.style.height = altezzaDinamicaPresenze + "px";
+
+    // Costruiamo il dataset: su mobile non impostiamo barThickness per lasciare che Chart.js calcoli le dimensioni
+    let datasetPresenze = {
+        label: "Presenze",
+        data: presenzeFiltrate,
+        backgroundColor: "rgba(0, 123, 255, 0.6)",
+        borderColor: "rgba(0, 123, 255, 1)",
+        borderWidth: 1
+    };
+    if (window.innerWidth >= 768) {
+        datasetPresenze.barThickness = 30;
+    }
 
     new Chart(chartPresenzeCanvas, {
         type: "bar",
         data: {
             labels: nomiPresenze,
-            datasets: [{
-                label: "Presenze",
-                data: presenzeFiltrate,
-                backgroundColor: "rgba(0, 123, 255, 0.6)",
-                borderColor: "rgba(0, 123, 255, 1)",
-                borderWidth: 1,
-                barThickness: barThickness
-            }]
+            datasets: [datasetPresenze]
         },
         options: {
             responsive: true,
@@ -163,7 +166,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
     });
 
     // 🥧 Grafico delle Reti con percentuali nei tooltip
-    const totaleReti = retiFiltrate.reduce((sum, reti) => sum + reti, 0);
+    const totaleReti = retiFiltrate.reduce((sum, r) => sum + r, 0);
     new Chart(document.getElementById("chartReti"), {
         type: "pie",
         data: {

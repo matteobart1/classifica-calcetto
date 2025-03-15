@@ -32,10 +32,12 @@ async function caricaClassifica() {
         });
 
         // Generazione tabella reti: filtra solo i giocatori con almeno 1 rete, ordina in modo decrescente
+        // Generazione tabella reti con media gol per partita
         data
             .filter(g => g.reti > 0)
             .sort((a, b) => b.reti - a.reti)
             .forEach((giocatore, index) => {
+                const mediaGol = (giocatore.reti / giocatore.presenze).toFixed(1); // correzione qui
                 htmlReti += `<tr>
                         <td>${index + 1}</td>
                         <td>
@@ -45,14 +47,15 @@ async function caricaClassifica() {
                         </td>
                         <td>${giocatore.nome}</td>
                         <td>${giocatore.reti}</td>
-                     </tr>`;
+                        <td>${mediaGol}</td> 
+                    </tr>`;
             });
-
         // Generazione tabella vittorie: filtra solo i giocatori con almeno 1 vittoria, ordina in modo decrescente
         data
             .filter(g => g.vittorie > 0)
             .sort((a, b) => b.vittorie - a.vittorie)
             .forEach((giocatore, index) => {
+                const percVittorie = Math.round((giocatore.vittorie / giocatore.presenze) * 100);
                 htmlVittorie += `<tr>
                         <td>${index + 1}</td>
                         <td>
@@ -62,9 +65,9 @@ async function caricaClassifica() {
                         </td>
                         <td>${giocatore.nome}</td>
                         <td>${giocatore.vittorie}</td>
-                     </tr>`;
+                        <td>${percVittorie}%</td>
+                    </tr>`;
             });
-
         document.getElementById("classifica").innerHTML = htmlPresenze;
         document.getElementById("classifica-reti").innerHTML = htmlReti;
         document.getElementById("classifica-vittorie").innerHTML = htmlVittorie;
@@ -298,4 +301,3 @@ document.addEventListener("DOMContentLoaded", () => {
     const loaderContainer = document.getElementById('loader-container');
     loaderContainer.style.display = 'none';
   });
-  

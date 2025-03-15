@@ -292,4 +292,10 @@ document.addEventListener("DOMContentLoaded", () => {
         versionIndicator.innerText = "Versione: errore";
       });
   });
+
+  window.addEventListener('load', function() {
+    // Nasconde il loader al termine del caricamento della pagina
+    const loaderContainer = document.getElementById('loader-container');
+    loaderContainer.style.display = 'none';
+  });
   

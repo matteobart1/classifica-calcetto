@@ -23,6 +23,7 @@ body {
   }
   
   /* Stile per il blocco legenda specifico della tabella presenze */
+    
   .badge-legend.legend-presenze {
     background-color: #f8f9fa;
     border-radius: 10px;
@@ -57,6 +58,16 @@ body {
     font-weight: bold;
   }
   
+ /* BADGE BOMBER */
+
+  .badge[src*="BadgeBomber"] {
+    width: 50px; /* puoi regolare questa dimensione */
+    height: 50px; /* puoi regolare questa dimensione */
+    bottom: -20px; /* aggiusta la posizione per compensare l'ingrandimento */
+    right: -20px;
+}
+
+
   /* Se hai stili specifici per la tabella delle presenze, ricordati di mantenere le classi (es. .tabella-presenze, .header-presenze) */
   
 

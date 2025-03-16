@@ -1,6 +1,8 @@
 async function caricaClassifica() {
     const url = "https://script.google.com/macros/s/AKfycbxJxBo8Xf4jXQoMpHVbvMVhuoDsNNHjLGXrAA9vLkEHp-ASJgK4WW14xXcsxICSWQYR1g/exec";
     const badgeURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png";
+    const badgeBomberURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1742164430/BadgeBomber_vcwkmk.png"; 
+
 
     try {
         const response = await fetch(url);
@@ -12,6 +14,9 @@ async function caricaClassifica() {
         let htmlPresenze = "";
         let htmlReti = "";
         let htmlVittorie = "";
+
+        // Trova il massimo numero di gol
+        const maxGol = Math.max(...data.map(g => g.reti));
 
         // Generazione tabella presenze (mantiene l'ordine originale o quello stabilito dal backend)
         data.forEach((giocatore, index) => {
@@ -32,17 +37,20 @@ async function caricaClassifica() {
         });
 
         // Generazione tabella reti: filtra solo i giocatori con almeno 1 rete, ordina in modo decrescente
-        // Generazione tabella reti con media gol per partita
+        
         data
             .filter(g => g.reti > 0)
             .sort((a, b) => b.reti - a.reti)
             .forEach((giocatore, index) => {
-                const mediaGol = (giocatore.reti / giocatore.presenze).toFixed(1); // correzione qui
+                const mediaGol = (giocatore.reti / giocatore.presenze).toFixed(1);
+                const badgeBomber = giocatore.reti === maxGol ? `<img src="${badgeBomberURL}" class="badge">` : "";
+
                 htmlReti += `<tr>
                         <td>${index + 1}</td>
                         <td>
                             <div class="player-container">
                                 <img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}">
+                                ${badgeBomber}
                             </div>
                         </td>
                         <td>${giocatore.nome}</td>

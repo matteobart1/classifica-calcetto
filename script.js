@@ -68,9 +68,16 @@ async function caricaClassifica() {
                         <td>${percVittorie}%</td>
                     </tr>`;
             });
-        document.getElementById("classifica").innerHTML = htmlPresenze;
-        document.getElementById("classifica-reti").innerHTML = htmlReti;
-        document.getElementById("classifica-vittorie").innerHTML = htmlVittorie;
+         // Inserimento dati nel DOM
+         document.getElementById("tbody-presenze").innerHTML = htmlPresenze;
+         document.getElementById("tbody-reti").innerHTML = htmlReti;
+         document.getElementById("tbody-vittorie").innerHTML = htmlVittorie;
+
+         // Rendi le tabelle ordinabili
+        rendiTabellaOrdinabile("classifica");
+        rendiTabellaOrdinabile("classifica-reti");
+        rendiTabellaOrdinabile("classifica-vittorie");
+
 
         generaGrafici(
             data.map(g => g.nome),
@@ -86,6 +93,43 @@ async function caricaClassifica() {
         document.getElementById("loading").style.display = "none";
     }
 }
+
+// Funzioni per ordinare le tabelle
+function rendiTabellaOrdinabile(idTabella) {
+    const tabella = document.getElementById(idTabella);
+    const intestazioni = tabella.querySelectorAll("th");
+    let direzioni = Array.from(intestazioni).map(() => true);
+
+    intestazioni.forEach((th, indice) => {
+        th.style.cursor = "pointer";
+        th.addEventListener("click", () => {
+            ordinaTabellaPerColonna(tabella, indice, direzioni[indice]);
+            direzioni[indice] = !direzioni[indice];
+        });
+    });
+}
+
+// Funzione di ordinamento generico
+function ordinaTabellaPerColonna(tabella, colonna, crescente) {
+    const tbody = tabella.tBodies[0];
+    const righe = Array.from(tbody.querySelectorAll("tr"));
+
+    righe.sort((a, b) => {
+        const testoA = a.children[colonna].textContent.trim();
+        const testoB = b.children[colonna].textContent.trim();
+
+        const valoreA = isNaN(testoA.replace("%","")) ? testoA : parseFloat(testoA.replace("%",""));
+        const valoreB = isNaN(testoB.replace("%","")) ? testoB : parseFloat(testoB.replace("%",""));
+
+        if (valoreA < valoreB) return crescente ? -1 : 1;
+        if (valoreA > valoreB) return crescente ? 1 : -1;
+        return 0;
+    });
+
+    righe.forEach(riga => tbody.appendChild(riga));
+}
+
+
 
 function generaGrafici(nomi, presenze, reti, vittorie) {
     // Grafico Presenze: Ordiniamo i giocatori per presenze e prendiamo solo i primi 10
@@ -266,7 +310,11 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
             }
         }
     });
+
+
 }
+
+
 
 caricaClassifica();
 
@@ -296,8 +344,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
+  
+  
   window.addEventListener('load', function() {
     // Nasconde il loader al termine del caricamento della pagina
     const loaderContainer = document.getElementById('loader-container');
     loaderContainer.style.display = 'none';
   });
+
+
+  

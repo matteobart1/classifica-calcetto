@@ -1,8 +1,8 @@
 async function caricaClassifica() {
-    const url = "https://script.google.com/macros/s/AKfycbxJxBo8Xf4jXQoMpHVbvMVhuoDsNNHjLGXrAA9vLkEHp-ASJgK4WW14xXcsxICSWQYR1g/exec";
+    const url = "https://script.google.com/macros/s/AKfycbzT1E1yjV5hyIM1-rXrDTGBWwzYgb65qXUlnMAOLtR7x-QdFltuZdgkqr89SZsQJwOJ9A/exec";
     const badgeURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png";
-    const badgeBomberURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1742164430/BadgeBomber_vcwkmk.png"; 
-
+    const badgeBomberURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1742666297/BadgeBomber_ujw3ww.png"; 
+    const badgeCapocannoniereURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1742664480/Badge_Goleador_darelx.png";
 
     try {
         const response = await fetch(url);
@@ -15,20 +15,23 @@ async function caricaClassifica() {
         let htmlReti = "";
         let htmlVittorie = "";
 
-        // Trova il massimo numero di gol
-        const maxGol = Math.max(...data.map(g => g.reti));
+        // Trova il massimo numero di gol in assoluto
+        const maxGolAssoluto = Math.max(...data.map(g => g.reti));
+
+        // Trova il massimo numero di gol in una singola partita
+        const maxGolSingolaPartita = Math.max(...data.map(g => g.recordGolSingolaPartita || 0));
 
         // Generazione tabella presenze (mantiene l'ordine originale o quello stabilito dal backend)
         data.forEach((giocatore, index) => {
-            const badge = index < 5 ? `<img src="${badgeURL}" class="badge">` : "";
+            const badge = index < 5 ? `<div class="badge-container"><img src="${badgeURL}" class="badge"></div>` : "";
             htmlPresenze += `<tr>
                         <td>${index + 1}</td>
                         <td>
                             <div class="player-container">
                                 <img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}">
-                                ${badge}
                             </div>
                         </td>
+                        <td>${badge}</td>
                         <td>${giocatore.nome}</td>
                         <td>${giocatore.presenze}</td>
                         <td>${new Date(giocatore.prima).toLocaleDateString()}</td>
@@ -37,22 +40,33 @@ async function caricaClassifica() {
         });
 
         // Generazione tabella reti: filtra solo i giocatori con almeno 1 rete, ordina in modo decrescente
-        
         data
             .filter(g => g.reti > 0)
             .sort((a, b) => b.reti - a.reti)
             .forEach((giocatore, index) => {
                 const mediaGol = (giocatore.reti / giocatore.presenze).toFixed(1);
-                const badgeBomber = giocatore.reti === maxGol ? `<img src="${badgeBomberURL}" class="badge">` : "";
+                
+                // Gestione dei badge
+                let badges = [];
+                if (giocatore.reti === maxGolAssoluto) {
+                    badges.push(`<img src="${badgeCapocannoniereURL}" class="badge">`);
+                }
+                if (giocatore.recordGolSingolaPartita === maxGolSingolaPartita) {
+                    badges.push(`<img src="${badgeBomberURL}" class="badge"><span class="badge-gol-count">${giocatore.recordGolSingolaPartita}</span>`);
+                }
+
+                const badgeHTML = badges.length > 0 
+                    ? `<div class="badge-container">${badges.join('')}</div>`
+                    : '';
 
                 htmlReti += `<tr>
                         <td>${index + 1}</td>
                         <td>
                             <div class="player-container">
                                 <img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}">
-                                ${badgeBomber}
                             </div>
                         </td>
+                        <td>${badgeHTML}</td>
                         <td>${giocatore.nome}</td>
                         <td>${giocatore.reti}</td>
                         <td>${mediaGol}</td> 

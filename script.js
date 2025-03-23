@@ -1,5 +1,5 @@
 async function caricaClassifica() {
-    const url = "https://script.google.com/macros/s/AKfycbzT1E1yjV5hyIM1-rXrDTGBWwzYgb65qXUlnMAOLtR7x-QdFltuZdgkqr89SZsQJwOJ9A/exec";
+    const url = "https://script.google.com/macros/s/AKfycbxf-KuK5WroV80q5WW7BVpTdtLKxv9bhuwckXlRz46r9ycWqDdN_obvVs4v2Agg2xPiMQ/exec";
     const badgeURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png";
     const badgeBomberURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1742666297/BadgeBomber_ujw3ww.png"; 
     const badgeCapocannoniereURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1742664480/Badge_Goleador_darelx.png";
@@ -44,7 +44,10 @@ async function caricaClassifica() {
             .filter(g => g.reti > 0)
             .sort((a, b) => b.reti - a.reti)
             .forEach((giocatore, index) => {
-                const mediaGol = (giocatore.reti / giocatore.presenze).toFixed(1);
+                const partiteConEsito = giocatore.vittorie + giocatore.sconfitte;
+                const mediaGol = partiteConEsito > 0 
+                    ? (giocatore.reti / partiteConEsito).toFixed(1).replace('.0', '') 
+                    : "0";
                 
                 // Gestione dei badge
                 let badges = [];
@@ -72,12 +75,14 @@ async function caricaClassifica() {
                         <td>${mediaGol}</td> 
                     </tr>`;
             });
-        // Generazione tabella vittorie: filtra solo i giocatori con almeno 1 vittoria, ordina in modo decrescente
+        // Generazione tabella vittorie: filtra solo i giocatori con almeno 1 vittoria o 1 sconfitta, ordina in modo decrescente
         data
-            .filter(g => g.vittorie > 0)
+            .filter(g => g.vittorie > 0 || g.sconfitte > 0)
             .sort((a, b) => b.vittorie - a.vittorie)
             .forEach((giocatore, index) => {
-                const percVittorie = Math.round((giocatore.vittorie / giocatore.presenze) * 100);
+                const partiteConEsito = giocatore.vittorie + giocatore.sconfitte;
+                const percVittorie = partiteConEsito > 0 ? Math.round((giocatore.vittorie / partiteConEsito) * 100) : 0;
+                const percSconfitte = 100 - percVittorie;
                 htmlVittorie += `<tr>
                         <td>${index + 1}</td>
                         <td>
@@ -88,6 +93,10 @@ async function caricaClassifica() {
                         <td>${giocatore.nome}</td>
                         <td>${giocatore.vittorie}</td>
                         <td>${percVittorie}%</td>
+                        <td>${giocatore.sconfitte}</td>
+                        <td>${percSconfitte}%</td>
+                        <td>${giocatore.maxVittorieConsecutive}</td>
+                        <td>${giocatore.maxSconfitteConsecutive}</td>
                     </tr>`;
             });
          // Inserimento dati nel DOM
@@ -112,7 +121,9 @@ async function caricaClassifica() {
         console.error("Errore nel recupero dati:", error);
         document.getElementById("loading").innerText = "Errore nel caricamento!";
     } finally {
-        document.getElementById("loading").style.display = "none";
+        // Nascondi il loader solo dopo che tutti i dati sono stati caricati e visualizzati
+        const loaderContainer = document.getElementById('loader-container');
+        loaderContainer.style.display = 'none';
     }
 }
 
@@ -368,11 +379,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   
   
-  window.addEventListener('load', function() {
-    // Nasconde il loader al termine del caricamento della pagina
-    const loaderContainer = document.getElementById('loader-container');
-    loaderContainer.style.display = 'none';
-  });
+  // Rimuovo l'event listener del load che non è più necessario
+  // window.addEventListener('load', function() {
+  //     const loaderContainer = document.getElementById('loader-container');
+  //     loaderContainer.style.display = 'none';
+  // });
 
 
   

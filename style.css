@@ -24,14 +24,14 @@ body {
   
   /* Stile per il blocco legenda specifico della tabella presenze */
     
-  .badge-legend.legend-presenze {
-    background-color: #f8f9fa;
-    border-radius: 10px;
+  .badge-legend {
+    background-color: white;
     padding: 15px;
-    margin: 0 auto 20px;
-    width: 80%;
-    max-width: 600px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .legend-items {
@@ -223,6 +223,36 @@ canvas {
     canvas {
         width: 100% !important;
         height: auto !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .badge-legend {
+        padding: 10px;
+    }
+
+    .legend-item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+
+    .legend-item > * {
+        display: block;
+        padding: 5px 0;
+    }
+
+    .legend-item img {
+        margin-bottom: 5px;
+    }
+
+    .legend-item span:not(.badge-description) {
+        padding-left: 0;
+    }
+
+    .badge-description {
+        padding-left: 0;
     }
 }
 

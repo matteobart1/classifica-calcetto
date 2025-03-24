@@ -207,13 +207,16 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
     chartPresenzeCanvas.style.height = altezzaDinamicaPresenze + "px";
     chartPresenzeCanvas.setAttribute("height", altezzaDinamicaPresenze);
 
+    // Configurazione del dataset per il grafico delle presenze
+    // Imposta colori, bordi e spessore delle barre
     let datasetPresenze = {
         label: "Presenze",
         data: presenzeFiltrate,
-        backgroundColor: "rgba(0, 123, 255, 0.6)",
-        borderColor: "rgba(0, 123, 255, 1)",
-        borderWidth: 1
+        backgroundColor: "rgba(0, 123, 255, 0.6)", // Colore di riempimento blu semi-trasparente
+        borderColor: "rgba(0, 123, 255, 1)", // Bordo blu pieno
+        borderWidth: 1 // Spessore bordo di 1px
     };
+    // Per schermi desktop (>= 768px) imposta uno spessore fisso delle barre
     if (window.innerWidth >= 768) {
         datasetPresenze.barThickness = 30;
     }

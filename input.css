@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .text-shadow {
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+  }
+  
+  .table-header {
+    @apply bg-primary text-white p-3 border-b border-gray-200;
+  }
+  
+  .table-cell {
+    @apply p-3 border-b border-gray-200;
+  }
+  
+  .badge-container {
+    @apply relative w-10 h-10 mx-auto;
+  }
+  
+  .player-container {
+    @apply relative w-12 h-12 mx-auto;
+  }
+  
+  .badge {
+    @apply absolute w-8 h-8;
+  }
+  
+  .badge-gol-count {
+    @apply absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-primary text-white text-xs px-1.5 py-0.5 rounded-full border border-black;
+  }
+} 

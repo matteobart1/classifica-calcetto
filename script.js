@@ -11,6 +11,9 @@ async function caricaClassifica() {
         const data = await response.json();
         console.log("Dati ricevuti:", data);
 
+        // Mostra il contenuto principale
+        document.getElementById('content').classList.remove('hidden');
+
         let htmlPresenze = "";
         let htmlReti = "";
         let htmlVittorie = "";
@@ -23,19 +26,23 @@ async function caricaClassifica() {
 
         // Generazione tabella presenze (mantiene l'ordine originale o quello stabilito dal backend)
         data.forEach((giocatore, index) => {
-            const badge = index < 5 ? `<div class="badge-container"><img src="${badgeURL}" class="badge"></div>` : "";
-            htmlPresenze += `<tr>
-                        <td>${index + 1}</td>
-                        <td>
-                            <div class="player-container">
-                                <img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}">
+            const badge = index < 5 ? `<div class="flex items-center justify-center w-full">
+                <div class="flex flex-col items-center justify-center w-10 h-14">
+                    <img src="${badgeURL}" class="w-8 h-8" alt="Badge Senatore">
+                </div>
+            </div>` : "";
+            htmlPresenze += `<tr class="border-b border-gray-200">
+                        <td class="align-middle">${index + 1}</td>
+                        <td class="align-middle">
+                            <div class="flex items-center justify-center w-16 h-16">
+                                <img src="${giocatore.immagine}" class="w-14 h-14 min-w-[3.5rem] min-h-[3.5rem] rounded-full object-cover border-2 border-gray-300 shadow-md" alt="${giocatore.nome}">
                             </div>
                         </td>
-                        <td>${badge}</td>
-                        <td>${giocatore.nome}</td>
-                        <td>${giocatore.presenze}</td>
-                        <td>${new Date(giocatore.prima).toLocaleDateString()}</td>
-                        <td>${new Date(giocatore.ultima).toLocaleDateString()}</td>
+                        <td class="align-middle">${badge}</td>
+                        <td class="align-middle">${giocatore.nome}</td>
+                        <td class="align-middle">${giocatore.presenze}</td>
+                        <td class="align-middle">${new Date(giocatore.prima).toLocaleDateString()}</td>
+                        <td class="align-middle">${new Date(giocatore.ultima).toLocaleDateString()}</td>
                      </tr>`;
         });
 
@@ -52,27 +59,32 @@ async function caricaClassifica() {
                 // Gestione dei badge
                 let badges = [];
                 if (giocatore.reti === maxGolAssoluto) {
-                    badges.push(`<img src="${badgeCapocannoniereURL}" class="badge">`);
+                    badges.push(`<div class="flex flex-col items-center justify-center w-10 h-14">
+                        <img src="${badgeCapocannoniereURL}" class="w-8 h-8" alt="Badge Capocannoniere">
+                    </div>`);
                 }
                 if (giocatore.recordGolSingolaPartita === maxGolSingolaPartita) {
-                    badges.push(`<img src="${badgeBomberURL}" class="badge"><span class="badge-gol-count">${giocatore.recordGolSingolaPartita}</span>`);
+                    badges.push(`<div class="flex flex-col items-center justify-center w-10 h-14">
+                        <img src="${badgeBomberURL}" class="w-8 h-8" alt="Badge Bomber">
+                        <span class="mt-1 bg-primary text-white text-xs px-1.5 py-0.5 rounded-full border border-gray-300">${giocatore.recordGolSingolaPartita}</span>
+                    </div>`);
                 }
 
                 const badgeHTML = badges.length > 0 
-                    ? `<div class="badge-container">${badges.join('')}</div>`
+                    ? `<div class="flex items-center ${badges.length === 1 ? 'justify-center' : 'justify-center'} w-full gap-1">${badges.join('')}</div>`
                     : '';
 
-                htmlReti += `<tr>
-                        <td>${index + 1}</td>
-                        <td>
-                            <div class="player-container">
-                                <img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}">
+                htmlReti += `<tr class="border-b border-gray-200">
+                        <td class="align-middle">${index + 1}</td>
+                        <td class="align-middle">
+                            <div class="flex items-center justify-center w-16 h-16">
+                                <img src="${giocatore.immagine}" class="w-14 h-14 min-w-[3.5rem] min-h-[3.5rem] rounded-full object-cover border-2 border-gray-300 shadow-md" alt="${giocatore.nome}">
                             </div>
                         </td>
-                        <td>${badgeHTML}</td>
-                        <td>${giocatore.nome}</td>
-                        <td>${giocatore.reti}</td>
-                        <td>${mediaGol}</td> 
+                        <td class="align-middle">${badgeHTML}</td>
+                        <td class="align-middle">${giocatore.nome}</td>
+                        <td class="align-middle">${giocatore.reti}</td>
+                        <td class="align-middle">${mediaGol}</td> 
                     </tr>`;
             });
         // Generazione tabella vittorie: filtra solo i giocatori con almeno 1 vittoria o 1 sconfitta, ordina in modo decrescente
@@ -83,20 +95,20 @@ async function caricaClassifica() {
                 const partiteConEsito = giocatore.vittorie + giocatore.sconfitte;
                 const percVittorie = partiteConEsito > 0 ? Math.round((giocatore.vittorie / partiteConEsito) * 100) : 0;
                 const percSconfitte = 100 - percVittorie;
-                htmlVittorie += `<tr>
-                        <td>${index + 1}</td>
-                        <td>
-                            <div class="player-container">
-                                <img src="${giocatore.immagine}" class="player-img" alt="${giocatore.nome}">
+                htmlVittorie += `<tr class="border-b border-gray-200">
+                        <td class="align-middle">${index + 1}</td>
+                        <td class="align-middle">
+                            <div class="flex items-center justify-center w-16 h-16">
+                                <img src="${giocatore.immagine}" class="w-14 h-14 min-w-[3.5rem] min-h-[3.5rem] rounded-full object-cover border-2 border-gray-300 shadow-md" alt="${giocatore.nome}">
                             </div>
                         </td>
-                        <td>${giocatore.nome}</td>
-                        <td>${giocatore.vittorie}</td>
-                        <td>${percVittorie}%</td>
-                        <td>${giocatore.sconfitte}</td>
-                        <td>${percSconfitte}%</td>
-                        <td>${giocatore.maxVittorieConsecutive}</td>
-                        <td>${giocatore.maxSconfitteConsecutive}</td>
+                        <td class="align-middle">${giocatore.nome}</td>
+                        <td class="align-middle">${giocatore.vittorie}</td>
+                        <td class="align-middle">${percVittorie}%</td>
+                        <td class="align-middle">${giocatore.sconfitte}</td>
+                        <td class="align-middle">${percSconfitte}%</td>
+                        <td class="align-middle">${giocatore.maxVittorieConsecutive}</td>
+                        <td class="align-middle">${giocatore.maxSconfitteConsecutive}</td>
                     </tr>`;
             });
          // Inserimento dati nel DOM
@@ -105,7 +117,7 @@ async function caricaClassifica() {
          document.getElementById("tbody-vittorie").innerHTML = htmlVittorie;
 
          // Rendi le tabelle ordinabili
-        rendiTabellaOrdinabile("classifica");
+        rendiTabellaOrdinabile("classifica-presenze");
         rendiTabellaOrdinabile("classifica-reti");
         rendiTabellaOrdinabile("classifica-vittorie");
 
@@ -119,9 +131,12 @@ async function caricaClassifica() {
 
     } catch (error) {
         console.error("Errore nel recupero dati:", error);
-        document.getElementById("loading").innerText = "Errore nel caricamento!";
+        // Mostra un messaggio di errore all'utente
+        const content = document.getElementById('content');
+        content.classList.remove('hidden');
+        content.innerHTML = '<div class="text-red-600 text-xl p-4">Errore nel caricamento dei dati. Riprova più tardi.</div>';
     } finally {
-        // Nascondi il loader solo dopo che tutti i dati sono stati caricati e visualizzati
+        // Nascondi il loader
         const loaderContainer = document.getElementById('loader-container');
         loaderContainer.style.display = 'none';
     }
@@ -135,6 +150,22 @@ function rendiTabellaOrdinabile(idTabella) {
 
     intestazioni.forEach((th, indice) => {
         th.style.cursor = "pointer";
+        // Aggiungo classi Tailwind per lo stile delle intestazioni
+        th.classList.add(
+            "bg-gray-100", 
+            "font-semibold", 
+            "text-gray-700", 
+            "border-b-2", 
+            "border-gray-300", 
+            "hover:bg-gray-200", 
+            "transition-colors", 
+            "duration-150", 
+            "py-3",
+            "px-4",
+            "text-center",  // centra il testo
+            "align-middle", // allinea verticalmente al centro
+            "break-words"   // permette il wrapping delle parole
+        );
         th.addEventListener("click", () => {
             ordinaTabellaPerColonna(tabella, indice, direzioni[indice]);
             direzioni[indice] = !direzioni[indice];
@@ -350,10 +381,8 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
 
 }
 
-
-
-caricaClassifica();
-
+// Avvia il caricamento dei dati quando la pagina è pronta
+document.addEventListener('DOMContentLoaded', caricaClassifica);
 
 document.addEventListener("DOMContentLoaded", () => {
     const versionIndicator = document.getElementById("version-indicator");

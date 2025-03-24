@@ -1,137 +1,195 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WS Futsal</title>
-  <!-- Collegamento al file CSS esterno -->
-  <link rel="stylesheet" href="style.css">
-  <!-- Aggiunta Favicon -->
-  <link rel="icon" href="https://res.cloudinary.com/dp44j757l/image/upload/v1741985585/AppLogo_qbzijz.png" type="image/png">
-  <!-- Includi Chart.js (può rimanere nel file HTML o essere gestito in altro modo) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WS Futsal</title>
+    <link rel="icon" href="https://res.cloudinary.com/dp44j757l/image/upload/v1741985585/AppLogo_qbzijz.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'primary': '#2c2d2e',
+              'gold': '#9b8f28',
+            },
+            animation: {
+              'spin-slow': 'spin 2s linear infinite',
+            },
+            backgroundImage: {
+              'hero-pattern': "url('https://res.cloudinary.com/dp44j757l/image/upload/v1741821059/IMG_7369_ngnl0j.jpg')",
+            },
+          },
+        },
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .player-container {
+            @apply flex items-center justify-center w-14 h-14 mx-auto;
+        }
+        .player-img {
+            @apply w-12 h-12 rounded-full object-cover border-2 border-primary shadow-md;
+            aspect-ratio: 1;
+        }
+        .badge-container {
+            @apply relative w-10 h-10 mx-auto;
+        }
+        .badge {
+            @apply absolute w-8 h-8;
+        }
+        .badge-gol-count {
+            @apply absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-primary text-white text-xs px-1.5 py-0.5 rounded-full border border-black;
+        }
+        .table-header {
+            @apply bg-primary text-white p-3 border-b border-gray-200 cursor-pointer hover:bg-primary/90;
+        }
+        .text-shadow {
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+        }
+        td {
+            @apply p-3 border-b border-gray-200;
+        }
+    </style>
 </head>
-<body>
-    <div id="loader-container">
-        <div class="loader"></div>
-      </div>  
+<body class="bg-hero-pattern bg-cover bg-center bg-fixed min-h-screen text-center p-5 overflow-x-hidden">
+    <!-- Loader -->
+    <div id="loader-container" class="fixed inset-0 bg-white flex justify-center items-center z-50">
+        <div class="w-20 h-20 border-8 border-gray-200 border-t-gold rounded-full animate-spin-slow"></div>
+    </div>
 
-
-    <header>
-        <div class="header-container">
-            <div class="header-container">
-                <div class="logo">
-                  <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1741985585/AppLogo_qbzijz.png" alt="Logo della WebApp">
-                </div>
-                <!-- Eventuali altri elementi, ad esempio il menu di navigazione -->
-                </nav>
-              </div>
+    <!-- Header -->
+    <header class="bg-transparent py-2.5 px-5">
+        <div class="max-w-7xl mx-auto flex justify-center">
+            <div class="logo">
+                <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1741985585/AppLogo_qbzijz.png" alt="Logo della WebApp" class="h-64 w-auto">
+            </div>
         </div>
-          
     </header>
 
-<h1 class="titolo-tabella-presenze">Classifica Presenze.</h1>
+    <!-- Contenuto principale -->
+    <div id="content" class="hidden">
+        <!-- Classifica Presenze -->
+        <h1 class="text-4xl font-bold text-white text-shadow bg-primary px-8 py-4 rounded-lg inline-block my-8 mx-auto max-w-[90%]">Classifica Presenze</h1>
 
- <!-- Blocco Legenda Badge spostato sotto il titolo -->
-<div class="badge-legend legend-presenze">
-    <div class="legend-items">
-      <div class="legend-item">
-        <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png" alt="Badge Senatore">
-        <span>Badge Senatore</span>
-        <span class="badge-description">Primi 5 giocatori con più presenze</span>
-      </div>
-      <!-- In futuro puoi aggiungere altri .legend-item qui -->
-    </div>
-  </div>
- </div>
-  <table id="classifica">
-      <thead>
-          <tr>
-              <th>#</th>
-              <th>Foto</th>
-              <th>Badge</th>
-              <th>Nome</th>
-              <th>Presenze</th>
-              <th>Prima Presenza</th>
-              <th>Ultima Presenza</th>
-          </tr>
-      </thead>
-      <tbody id="tbody-presenze"></tbody>
-  </table>
-
-<h1>Classifica Reti</h1>
-  <div class="badge-legend legend-presenze badge-bomber">
-    <div class="legend-items">
-        <div class="legend-item">
-            <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1742666297/BadgeBomber_ujw3ww.png" alt="Badge Bomber">
-            <span>Badge Bomber</span>
-            <span class="badge-description">Record di gol in una singola partita</span>
+        <!-- Legenda Badge -->
+        <div class="bg-white/90 p-4 rounded-lg shadow-lg mx-auto mb-8 w-[90%] max-w-2xl">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png" alt="Badge Senatore" class="w-8 h-8">
+                    <div class="text-left">
+                        <span class="font-bold">Badge Senatore</span>
+                        <span class="block text-sm text-gray-600">Primi 5 giocatori con più presenze</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="legend-item">
-            <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1742664480/Badge_Goleador_darelx.png" alt="Badge Capocannoniere">
-            <span>Badge Capocannoniere</span>
-            <span class="badge-description">Record di gol in assoluto</span>
+
+        <!-- Tabella Presenze -->
+        <div class="overflow-x-auto">
+            <table id="classifica-presenze" class="w-[90%] max-w-4xl mx-auto my-5 bg-white rounded-lg overflow-hidden shadow-lg">
+                <thead>
+                    <tr>
+                        <th class="table-header">#</th>
+                        <th class="table-header">Foto</th>
+                        <th class="table-header">Badge</th>
+                        <th class="table-header">Nome</th>
+                        <th class="table-header">Presenze</th>
+                        <th class="table-header">Prima Presenza</th>
+                        <th class="table-header">Ultima Presenza</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-presenze"></tbody>
+            </table>
+        </div>
+
+        <!-- Classifica Reti -->
+        <h1 class="text-4xl font-bold text-white text-shadow bg-primary px-8 py-4 rounded-lg inline-block my-8 mx-auto max-w-[90%]">Classifica Reti</h1>
+
+        <!-- Legenda Badge Reti -->
+        <div class="bg-white/90 p-4 rounded-lg shadow-lg mx-auto mb-8 w-[90%] max-w-2xl">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1742666297/BadgeBomber_ujw3ww.png" alt="Badge Bomber" class="w-8 h-8">
+                    <div class="text-left">
+                        <span class="font-bold">Badge Bomber</span>
+                        <span class="block text-sm text-gray-600">Record di gol in una singola partita</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <img src="https://res.cloudinary.com/dp44j757l/image/upload/v1742664480/Badge_Goleador_darelx.png" alt="Badge Capocannoniere" class="w-8 h-8">
+                    <div class="text-left">
+                        <span class="font-bold">Badge Capocannoniere</span>
+                        <span class="block text-sm text-gray-600">Record di gol in assoluto</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabella Reti -->
+        <div class="overflow-x-auto">
+            <table id="classifica-reti" class="w-[90%] max-w-4xl mx-auto my-5 bg-white rounded-lg overflow-hidden shadow-lg">
+                <thead>
+                    <tr>
+                        <th class="table-header">#</th>
+                        <th class="table-header">Foto</th>
+                        <th class="table-header">Badge</th>
+                        <th class="table-header">Nome</th>
+                        <th class="table-header">Gol Fatti</th>
+                        <th class="table-header">Media Gol</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-reti"></tbody>
+            </table>
+        </div>
+
+        <!-- Classifica Vittorie -->
+        <h1 class="text-4xl font-bold text-white text-shadow bg-primary px-8 py-4 rounded-lg inline-block my-8 mx-auto max-w-[90%]">Classifica Vittorie</h1>
+
+        <!-- Tabella Vittorie -->
+        <div class="overflow-x-auto">
+            <table id="classifica-vittorie" class="w-[90%] max-w-4xl mx-auto my-5 bg-white rounded-lg overflow-hidden shadow-lg">
+                <thead>
+                    <tr>
+                        <th class="table-header">#</th>
+                        <th class="table-header">Foto</th>
+                        <th class="table-header">Nome</th>
+                        <th class="table-header">Vittorie</th>
+                        <th class="table-header">% Vittorie</th>
+                        <th class="table-header">Sconfitte</th>
+                        <th class="table-header">% Sconfitte</th>
+                        <th class="table-header">Striscia Positiva</th>
+                        <th class="table-header">Striscia Negativa</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-vittorie"></tbody>
+            </table>
+        </div>
+
+        <!-- Statistiche -->
+        <h1 class="text-4xl font-bold text-white text-shadow bg-primary px-8 py-4 rounded-lg inline-block my-8 mx-auto max-w-[90%]">Statistiche</h1>
+
+        <!-- Grafici -->
+        <div class="w-[90%] max-w-2xl mx-auto my-5 p-5 bg-white rounded-lg shadow-lg">
+            <canvas id="chartPresenze"></canvas>
+        </div>
+        <div class="w-[90%] max-w-2xl mx-auto my-5 p-5 bg-white rounded-lg shadow-lg">
+            <canvas id="chartReti"></canvas>
+        </div>
+        <div class="w-[90%] max-w-2xl mx-auto my-5 p-5 bg-white rounded-lg shadow-lg">
+            <canvas id="chartVittorie"></canvas>
         </div>
     </div>
-</div>
-  <table id="classifica-reti">
-      <thead>
-          <tr>
-              <th>#</th>
-              <th>Foto</th>
-              <th>Badge</th>
-              <th>Nome</th>
-              <th>Gol Fatti</th>
-              <th>Media Gol</th>
-          </tr>
-      </thead>
-      <tbody id="tbody-reti"></tbody>
-  </table>
 
-  <h1>Classifica Vittorie</h1>
-  <table id="classifica-vittorie">
-      <thead>
-          <tr>
-              <th>#</th>
-              <th>Foto</th>
-              <th>Nome</th>
-              <th>Vittorie</th>
-              <th>% Vittorie</th>
-              <th>Sconfitte</th>
-              <th>% Sconfitte</th>
-              <th>Striscia Positiva</th>
-              <th>Striscia Negativa</th>
-          </tr>
-      </thead>
-      <tbody id="tbody-vittorie"></tbody>
-  </table>
+    <!-- Footer -->
+    <footer class="bg-black/60 text-white py-5 mt-10 text-center text-sm">
+        <div class="max-w-2xl mx-auto">
+            <div id="version-indicator" class="text-[0.9em] mb-2.5"></div>
+            <p>© 2025 WS Futsal - Tutti i diritti riservati</p>
+        </div>
+    </footer>
 
-  <h1 class="titolo-statistiche">Statistiche</h1>
-
-  <div class="chart-container">
-      <canvas id="chartPresenze"></canvas>
-  </div>
-  <div class="chart-container">
-      <canvas id="chartReti"></canvas>
-  </div>
-  <div class="chart-container">
-      <canvas id="chartVittorie"></canvas>
-  </div>
-
-  <!-- Includi il file JavaScript esterno -->
-  <script src="script.js"></script>
-
-  
-  
-
+    <script src="script.js"></script>
 </body>
-
-<footer>
-    <div class="footer-content">
-      <p>© 2025 WS Futsal - Tutti i diritti riservati</p>
-      
-    </div>
-    <div id="version-indicator" style="font-size:0.9em; margin-bottom:10px;"></div>  
-</footer>
-
 </html>

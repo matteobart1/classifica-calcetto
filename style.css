@@ -8,6 +8,9 @@ body {
     margin: 0;
     text-align: center;
     padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 /* Legenda Badge */
@@ -17,14 +20,14 @@ body {
     padding: 15px 30px;
     border-radius: 10px;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
-    margin-top: 30px;
-    margin-bottom: 10px;
-    
-  }
-  
-  /* Stile per il blocco legenda specifico della tabella presenze */
-    
-  .badge-legend {
+    margin: 30px auto 10px;
+    display: inline-block;
+    width: auto;
+    max-width: 90%;
+}
+
+/* Stile per il blocco legenda specifico della tabella presenze */
+.badge-legend {
     background-color: #f8f9fa;
     padding: 15px;
     border-radius: 10px;
@@ -32,9 +35,9 @@ body {
     width: 80%;
     max-width: 600px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .legend-items {
+}
+
+.legend-items {
     display: table;
     width: 100%;
     border-collapse: separate;
@@ -96,8 +99,10 @@ h1 {
     padding: 15px 30px;
     border-radius: 10px;
     display: inline-block;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin: 30px auto 20px;
+    width: auto;
+    max-width: 90%;
+    box-sizing: border-box;
 }
 
 table {
@@ -109,6 +114,7 @@ table {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
 }
 
 th, td {
@@ -192,6 +198,7 @@ td:nth-child(3) {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
 }
 
 #chartVittorie {
@@ -207,26 +214,65 @@ canvas {
 
 /* Media query per dispositivi mobili */
 @media (max-width: 768px) {
-    table {
-        width: 100%;
-        font-size: 14px;
-    }
-    .table-container {
-        overflow-x: auto;
-    }
-    /* Per i grafici: riduciamo leggermente la larghezza e aggiungiamo margini laterali */
-    .chart-container {
-        width: calc(100% - 20px); /* Lascia 10px di margine su entrambi i lati */
-        margin: 20px auto;
+    body {
         padding: 10px;
     }
+
+    h1 {
+        font-size: 28px;
+        padding: 10px 20px;
+        margin: 20px auto 15px;
+    }
+
+    table {
+        width: 95%;
+        font-size: 14px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .chart-container {
+        width: 95%;
+        padding: 15px;
+        margin: 15px auto;
+    }
+
     canvas {
         width: 100% !important;
         height: auto !important;
     }
+
+    .player-container {
+        width: 40px;
+        height: 40px;
+    }
+
+    .badge {
+        width: 30px;
+        height: 30px;
+    }
+
+    .badge-container {
+        min-height: 70px;
+        padding: 5px 0;
+    }
 }
 
 @media (max-width: 500px) {
+    body {
+        padding: 5px;
+    }
+
+    h1 {
+        font-size: 24px;
+        padding: 8px 16px;
+        margin: 15px auto 10px;
+    }
+
     .badge-legend {
         width: 90%;
         padding: 10px;
@@ -254,6 +300,15 @@ canvas {
 
     .badge-description {
         padding-left: 0;
+    }
+
+    table {
+        width: 98%;
+    }
+
+    .chart-container {
+        width: 98%;
+        padding: 10px;
     }
 }
 

@@ -116,6 +116,20 @@ async function caricaClassifica() {
          document.getElementById("tbody-reti").innerHTML = htmlReti;
          document.getElementById("tbody-vittorie").innerHTML = htmlVittorie;
 
+         // Aggiungi indicatore di scroll orizzontale per mobile
+         const tables = document.querySelectorAll('.overflow-x-auto');
+         tables.forEach(table => {
+             const scrollIndicator = document.createElement('div');
+             scrollIndicator.className = 'md:hidden flex items-center justify-center gap-2 py-2 bg-gray-100 text-gray-600 text-sm';
+             scrollIndicator.innerHTML = `
+                 <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                 </svg>
+                 <span>Scorri orizzontalmente per vedere tutte le colonne</span>
+             `;
+             table.parentNode.insertBefore(scrollIndicator, table);
+         });
+
          // Rendi le tabelle ordinabili
         rendiTabellaOrdinabile("classifica-presenze");
         rendiTabellaOrdinabile("classifica-reti");
@@ -152,12 +166,12 @@ function rendiTabellaOrdinabile(idTabella) {
         th.style.cursor = "pointer";
         // Aggiungo classi Tailwind per lo stile delle intestazioni
         th.classList.add(
-            "bg-gray-100", 
+            "bg-gray-200",  // Sfondo più scuro
             "font-semibold", 
-            "text-gray-700", 
+            "text-gray-800",  // Testo più scuro per maggiore contrasto
             "border-b-2", 
-            "border-gray-300", 
-            "hover:bg-gray-200", 
+            "border-gray-400",  // Bordo più scuro
+            "hover:bg-gray-300",  // Hover più scuro
             "transition-colors", 
             "duration-150", 
             "py-3",

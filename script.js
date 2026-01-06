@@ -1,7 +1,7 @@
 async function caricaClassifica() {
-    const url = "https://script.google.com/macros/s/AKfycbxf-KuK5WroV80q5WW7BVpTdtLKxv9bhuwckXlRz46r9ycWqDdN_obvVs4v2Agg2xPiMQ/exec";
+    const url = "https://script.google.com/macros/s/AKfycbyJnPsk8KBjXLI50HzHIuepoL7uQbUaxneYH5th6jD7BE5-URtdH3KOaoOrzdr5e9QGIA/exec";
     const badgeURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1741736096/SenatorBadge_a7jkzn.png";
-    const badgeBomberURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1742666297/BadgeBomber_ujw3ww.png"; 
+    const badgeBomberURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1742666297/BadgeBomber_ujw3ww.png";
     const badgeCapocannoniereURL = "https://res.cloudinary.com/dp44j757l/image/upload/v1742664480/Badge_Goleador_darelx.png";
 
     try {
@@ -52,10 +52,10 @@ async function caricaClassifica() {
             .sort((a, b) => b.reti - a.reti)
             .forEach((giocatore, index) => {
                 const partiteConEsito = giocatore.vittorie + giocatore.sconfitte;
-                const mediaGol = partiteConEsito > 0 
-                    ? (giocatore.reti / partiteConEsito).toFixed(1).replace('.0', '') 
+                const mediaGol = partiteConEsito > 0
+                    ? (giocatore.reti / partiteConEsito).toFixed(1).replace('.0', '')
                     : "0";
-                
+
                 // Gestione dei badge
                 let badges = [];
                 if (giocatore.reti === maxGolAssoluto) {
@@ -70,7 +70,7 @@ async function caricaClassifica() {
                     </div>`);
                 }
 
-                const badgeHTML = badges.length > 0 
+                const badgeHTML = badges.length > 0
                     ? `<div class="flex items-center ${badges.length === 1 ? 'justify-center' : 'justify-center'} w-full gap-1">${badges.join('')}</div>`
                     : '';
 
@@ -84,6 +84,7 @@ async function caricaClassifica() {
                         <td class="align-middle">${badgeHTML}</td>
                         <td class="align-middle">${giocatore.nome}</td>
                         <td class="align-middle">${giocatore.reti}</td>
+                        <td class="align-middle">${giocatore.autoreti}</td>
                         <td class="align-middle">${mediaGol}</td> 
                     </tr>`;
             });
@@ -111,26 +112,26 @@ async function caricaClassifica() {
                         <td class="align-middle">${giocatore.maxSconfitteConsecutive}</td>
                     </tr>`;
             });
-         // Inserimento dati nel DOM
-         document.getElementById("tbody-presenze").innerHTML = htmlPresenze;
-         document.getElementById("tbody-reti").innerHTML = htmlReti;
-         document.getElementById("tbody-vittorie").innerHTML = htmlVittorie;
+        // Inserimento dati nel DOM
+        document.getElementById("tbody-presenze").innerHTML = htmlPresenze;
+        document.getElementById("tbody-reti").innerHTML = htmlReti;
+        document.getElementById("tbody-vittorie").innerHTML = htmlVittorie;
 
-         // Aggiungi indicatore di scroll orizzontale per mobile
-         const tables = document.querySelectorAll('.overflow-x-auto');
-         tables.forEach(table => {
-             const scrollIndicator = document.createElement('div');
-             scrollIndicator.className = 'md:hidden flex items-center justify-center gap-2 py-2 bg-gray-100 text-gray-600 text-sm';
-             scrollIndicator.innerHTML = `
+        // Aggiungi indicatore di scroll orizzontale per mobile
+        const tables = document.querySelectorAll('.overflow-x-auto');
+        tables.forEach(table => {
+            const scrollIndicator = document.createElement('div');
+            scrollIndicator.className = 'md:hidden flex items-center justify-center gap-2 py-2 bg-gray-100 text-gray-600 text-sm';
+            scrollIndicator.innerHTML = `
                  <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                  </svg>
                  <span>Scorri orizzontalmente per vedere tutte le colonne</span>
              `;
-             table.parentNode.insertBefore(scrollIndicator, table);
-         });
+            table.parentNode.insertBefore(scrollIndicator, table);
+        });
 
-         // Rendi le tabelle ordinabili
+        // Rendi le tabelle ordinabili
         rendiTabellaOrdinabile("classifica-presenze");
         rendiTabellaOrdinabile("classifica-reti");
         rendiTabellaOrdinabile("classifica-vittorie");
@@ -167,13 +168,13 @@ function rendiTabellaOrdinabile(idTabella) {
         // Aggiungo classi Tailwind per lo stile delle intestazioni
         th.classList.add(
             "bg-gray-200",  // Sfondo più scuro
-            "font-semibold", 
+            "font-semibold",
             "text-gray-800",  // Testo più scuro per maggiore contrasto
-            "border-b-2", 
+            "border-b-2",
             "border-gray-400",  // Bordo più scuro
             "hover:bg-gray-300",  // Hover più scuro
-            "transition-colors", 
-            "duration-150", 
+            "transition-colors",
+            "duration-150",
             "py-3",
             "px-4",
             "text-center",  // centra il testo
@@ -196,8 +197,8 @@ function ordinaTabellaPerColonna(tabella, colonna, crescente) {
         const testoA = a.children[colonna].textContent.trim();
         const testoB = b.children[colonna].textContent.trim();
 
-        const valoreA = isNaN(testoA.replace("%","")) ? testoA : parseFloat(testoA.replace("%",""));
-        const valoreB = isNaN(testoB.replace("%","")) ? testoB : parseFloat(testoB.replace("%",""));
+        const valoreA = isNaN(testoA.replace("%", "")) ? testoA : parseFloat(testoA.replace("%", ""));
+        const valoreB = isNaN(testoB.replace("%", "")) ? testoB : parseFloat(testoB.replace("%", ""));
 
         if (valoreA < valoreB) return crescente ? -1 : 1;
         if (valoreA > valoreB) return crescente ? 1 : -1;
@@ -215,7 +216,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
         nome: nome,
         presenze: presenze[index]
     })).sort((a, b) => b.presenze - a.presenze)
-      .slice(0, 10);
+        .slice(0, 10);
 
     const nomiPresenze = top10Presenze.map(g => g.nome);
     const presenzeFiltrate = top10Presenze.map(g => g.presenze);
@@ -234,7 +235,7 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
         nome: nome,
         vittorie: vittorie[index]
     })).sort((a, b) => b.vittorie - a.vittorie)
-      .slice(0, 10);
+        .slice(0, 10);
 
     const nomiVittorie = top10Vittorie.map(g => g.nome);
     const vittorieFiltrate = top10Vittorie.map(g => g.vittorie);
@@ -305,8 +306,8 @@ function generaGrafici(nomi, presenze, reti, vittorie) {
                 label: "Reti",
                 data: retiFiltrate,
                 backgroundColor: [
-                    
-                    
+
+
                     "rgba(0, 123, 255, 0.8)",  // Blu Primario
                     "rgba(0, 86, 179, 0.8)",   // Blu Scuro
                     "rgba(40, 167, 69, 0.8)",  // Verde Campo
@@ -400,36 +401,35 @@ document.addEventListener('DOMContentLoaded', caricaClassifica);
 
 document.addEventListener("DOMContentLoaded", () => {
     const versionIndicator = document.getElementById("version-indicator");
-  
+
     // Sostituisci "tuoUtente" e "tuoRepo" con i dati del tuo repository
     fetch("https://api.github.com/repos/matteobart1/classifica-calcetto/commits?per_page=1")
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.length > 0) {
-          const commit = data[0];
-          const commitHash = commit.sha.substring(0, 7); // Prendi i primi 7 caratteri
-          // Estrai la data del commit
-          const commitDate = new Date(commit.commit.committer.date);
-          // Formatta la data come preferisci, ad esempio con toLocaleString()
-          const formattedDate = commitDate.toLocaleString();
-          versionIndicator.innerText = `Versione: ${commitHash} (commit del ${formattedDate})`;
-        } else {
-          versionIndicator.innerText = "Versione: non disponibile";
-        }
-      })
-      .catch(error => {
-        console.error("Errore nel recupero della versione:", error);
-        versionIndicator.innerText = "Versione: errore";
-      });
-  });
-
-  
-  
-  // Rimuovo l'event listener del load che non è più necessario
-  // window.addEventListener('load', function() {
-  //     const loaderContainer = document.getElementById('loader-container');
-  //     loaderContainer.style.display = 'none';
-  // });
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.length > 0) {
+                const commit = data[0];
+                const commitHash = commit.sha.substring(0, 7); // Prendi i primi 7 caratteri
+                // Estrai la data del commit
+                const commitDate = new Date(commit.commit.committer.date);
+                // Formatta la data come preferisci, ad esempio con toLocaleString()
+                const formattedDate = commitDate.toLocaleString();
+                versionIndicator.innerText = `Versione: ${commitHash} (commit del ${formattedDate})`;
+            } else {
+                versionIndicator.innerText = "Versione: non disponibile";
+            }
+        })
+        .catch(error => {
+            console.error("Errore nel recupero della versione:", error);
+            versionIndicator.innerText = "Versione: errore";
+        });
+});
 
 
-  
+
+// Rimuovo l'event listener del load che non è più necessario
+// window.addEventListener('load', function() {
+//     const loaderContainer = document.getElementById('loader-container');
+//     loaderContainer.style.display = 'none';
+// });
+
+

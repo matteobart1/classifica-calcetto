@@ -11,6 +11,7 @@ function doGet(e) {
         var immagine = data[i][3];  // URL immagine
         var vittoria = data[i][4];  // Vittoria (Sì/No)
         var reti = data[i][5] || 0;  // Reti segnate (default 0 se vuoto)
+        var autoreti = data[i][6] || 0; // Autoreti (default 0 se vuoto)
         
         if (!presenze[nome]) {
             presenze[nome] = { 
@@ -21,6 +22,7 @@ function doGet(e) {
                 vittorie: 0,
                 sconfitte: 0,
                 reti: 0,
+                autoreti: 0,
                 recordGolSingolaPartita: 0,
                 maxVittorieConsecutive: 0,
                 maxSconfitteConsecutive: 0,
@@ -49,7 +51,6 @@ function doGet(e) {
                 if (presenze[nome].sconfitteConsecutive > presenze[nome].maxSconfitteConsecutive) {
                     presenze[nome].maxSconfitteConsecutive = presenze[nome].sconfitteConsecutive;
                 }
-                Logger.log("Sconfitta per " + nome + ": " + presenze[nome].sconfitte);
             }
         } else {
             // Azzera i contatori quando il giocatore non è presente
@@ -60,6 +61,10 @@ function doGet(e) {
         // Somma i gol segnati
         var golPartita = parseInt(reti) || 0;
         presenze[nome].reti += golPartita;
+
+        // Somma le autoreti
+        var autoretiPartita = parseInt(autoreti) || 0;
+        presenze[nome].autoreti += autoretiPartita;
 
         // Aggiorna il record di gol in una singola partita
         if (golPartita > presenze[nome].recordGolSingolaPartita) {
@@ -87,6 +92,7 @@ function doGet(e) {
             vittorie: dati.vittorie,
             sconfitte: dati.sconfitte,
             reti: dati.reti,
+            autoreti: dati.autoreti,
             recordGolSingolaPartita: dati.recordGolSingolaPartita,
             maxVittorieConsecutive: dati.maxVittorieConsecutive,
             maxSconfitteConsecutive: dati.maxSconfitteConsecutive
